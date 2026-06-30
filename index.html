@@ -18,7 +18,6 @@
       </a>
       <nav class="top-nav__menu" aria-label="주요 메뉴">
         <a href="#about">이벤트 소개</a>
-        <a href="#how-to">참여 방법</a>
         <a href="#prizes">경품 안내</a>
         <a href="#participate">기대평 남기기</a>
         <a href="#notice">유의사항</a>
@@ -44,11 +43,10 @@
         <div class="hero-band__period">
           <time datetime="2026-07-06">2026.07.06 (월)</time>
           <span class="hero-band__period-sep">—</span>
-          <time datetime="2026-07-19">2026.07.19 (토)</time>
+          <time datetime="2026-07-19">2026.07.19 (일)</time>
         </div>
         <div class="hero-band__actions">
           <a href="#participate" class="button-download">기대평 남기기</a>
-          <a href="#how-to" class="button-tertiary-text">참여 방법 보기</a>
         </div>
       </div>
     </section>
@@ -58,64 +56,17 @@
       <div class="container">
         <p class="section-label">ABOUT</p>
         <h2 class="section-title">이벤트 소개</h2>
-        <div class="about-grid">
-          <div class="feature-card">
-            <h3 class="feature-card__title">무엇을 하나요?</h3>
-            <p class="feature-card__body">
-              아이스크림 AI 디지털 교육자료의<br />
-              업데이트 될 기능들 중<br />
-              가장 기대되는 하나를 선택하고,<br />
-              간단한 기대평과 활용안을 작성해 주세요.
-            </p>
-          </div>
-          <div class="feature-card">
-            <h3 class="feature-card__title">누가 참여할 수 있나요?</h3>
-            <p class="feature-card__body">
-              <!-- TODO: 참여 자격 조건 -->
-              이벤트 기간 내 조건을 충족하는 모든 분이 참여할 수 있습니다.
-            </p>
-          </div>
-          <div class="feature-card">
-            <h3 class="feature-card__title">언제 진행되나요?</h3>
-            <p class="feature-card__body">
-              2026년 7월 6일(월) 00:00부터<br />
-              7월 19일(토) 23:59까지
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 참여 방법 -->
-    <section class="section section--soft" id="how-to">
-      <div class="container">
-        <p class="section-label">HOW TO</p>
-        <h2 class="section-title">참여 방법</h2>
-        <ol class="steps">
-          <li class="step-card">
-            <span class="step-card__num">01</span>
-            <h3 class="step-card__title">이벤트 페이지 확인</h3>
-            <p class="step-card__body">
-              <!-- TODO: 1단계 상세 -->
-              본 랜딩페이지에서 이벤트 내용과 유의사항을 확인합니다.
-            </p>
-          </li>
-          <li class="step-card">
-            <span class="step-card__num">02</span>
-            <h3 class="step-card__title">기대평 작성</h3>
-            <p class="step-card__body">
-              개인정보 수집·이용에 동의한 후, 아래 양식에 기대평을 작성해 등록해 주세요.
-            </p>
-          </li>
-          <li class="step-card">
-            <span class="step-card__num">03</span>
-            <h3 class="step-card__title">참여 완료</h3>
-            <p class="step-card__body">
-              <!-- TODO: 3단계 상세 (인증·제출 방법) -->
-              참여가 완료되면 추첨 대상에 자동으로 포함됩니다.
-            </p>
-          </li>
-        </ol>
+        <figure class="about-visual">
+          <img
+            src="event.png"
+            alt="이벤트 소개. 무엇을 하나요: 업데이트 기능 중 기대되는 하나를 선택하고 기대평과 활용안 작성. 누가 참여할 수 있나요: 전국 초등학교 선생님. 언제 진행되나요: 2026년 7월 6일(월)부터 7월 19일(일)까지"
+            class="about-visual__image"
+            width="2353"
+            height="302"
+            loading="lazy"
+            decoding="async"
+          />
+        </figure>
       </div>
     </section>
 
@@ -125,20 +76,17 @@
         <p class="section-label">PRIZES</p>
         <h2 class="section-title">경품 안내</h2>
         <p class="prize-intro">기대평 작성자 대상 <strong>추첨</strong>을 통해 아래 경품을 드립니다.</p>
-        <div class="prize-grid">
-          <article class="prize-card">
-            <p class="prize-card__name">올리브영 30,000원 금액권</p>
-            <p class="prize-card__count">30명</p>
-          </article>
-          <article class="prize-card">
-            <p class="prize-card__name">네이버페이 20,000원 금액권</p>
-            <p class="prize-card__count">50명</p>
-          </article>
-          <article class="prize-card">
-            <p class="prize-card__name">투썸플레이스 아메리카노</p>
-            <p class="prize-card__count">100명</p>
-          </article>
-        </div>
+        <figure class="prize-visual">
+          <img
+            src="prize-banner.png"
+            alt="이벤트 경품 안내. 1등 올리브영 30,000원권 10명, 2등 네이버페이 포인트 10,000원권 30명, 3등 투썸플레이스 아이스 아메리카노 50명"
+            class="prize-visual__image"
+            width="1024"
+            height="558"
+            loading="lazy"
+            decoding="async"
+          />
+        </figure>
       </div>
     </section>
 
@@ -150,7 +98,7 @@
         <div class="schedule-table">
           <div class="schedule-row">
             <span class="schedule-row__label">이벤트 기간</span>
-            <span class="schedule-row__value">2026.07.06 (월) — 2026.07.19 (토)</span>
+            <span class="schedule-row__value">2026.07.06 (월) — 2026.07.19 (일)</span>
           </div>
           <div class="schedule-row">
             <span class="schedule-row__label">당첨자 발표</span>
@@ -299,11 +247,21 @@
 
         <!-- 편의성 강화 안내 (선택 없음) -->
         <div class="convenience-block">
-          <h3 class="convenience-block__title">그외 기능 업데이트 안내</h3>
+          <div class="convenience-block__header">
+            <h3 class="convenience-block__title">수업 환경 개선 및 편의 기능 고도화</h3>
+            <button type="button" class="feature-detail-btn convenience-block__detail-btn" data-feature="feature-convenience">자세히 보기</button>
+          </div>
           <p class="convenience-block__guide">선생님들의 수업 편의성을 더욱 강화하기 위해 아래와 같은 기능도 업데이트 될 예정입니다.</p>
           <ul class="convenience-block__list">
             <li>대시보드 PDF 저장</li>
             <li>과제, 문제지 만들기(5,6학년 한정 기능)시 차시 중복 선택 가능</li>
+            <li>모니터링 화면 기능 개선</li>
+            <li>평가 응시 기한 및 마감일 설정 유연화</li>
+            <li>총괄 평가 신설</li>
+            <li>연습장 화면 개선</li>
+            <li>다양한 수업 도구 연동</li>
+            <li>안내 영상 및 매뉴얼 제공</li>
+            <li>문항 오류 접수 버튼 추가</li>
           </ul>
         </div>
 
@@ -535,6 +493,7 @@
     </div>
   </footer>
 
+  <script src="google-form.config.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

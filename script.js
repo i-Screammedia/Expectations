@@ -1,5 +1,83 @@
 const STORAGE_KEY = 'aidt-expectation-comments-v1';
 
+function isGoogleFormConfigured() {
+  const config = typeof GOOGLE_FORM_CONFIG !== 'undefined' ? GOOGLE_FORM_CONFIG : null;
+  if (!config?.enabled || !config.actionUrl) return false;
+
+  const hasPlaceholder =
+    config.actionUrl.includes('REPLACE') ||
+    Object.values(config.entries || {}).some(
+      (entryId) => !entryId || String(entryId).includes('REPLACE')
+    );
+
+  return !hasPlaceholder;
+}
+
+function buildGoogleFormBody(data) {
+  const { entries } = GOOGLE_FORM_CONFIG;
+  const params = new URLSearchParams();
+
+  params.append(entries.office, data.office);
+  params.append(entries.school, data.school);
+  params.append(entries.name, data.name);
+  params.append(entries.phone, data.phone);
+  params.append(entries.feature, data.featureLabel);
+  params.append(entries.comment, data.comment);
+
+  if (entries.consent && entries.consentValue) {
+    params.append(entries.consent, entries.consentValue);
+  }
+  if (entries.redirectAck && entries.redirectAckValue) {
+    params.append(entries.redirectAck, entries.redirectAckValue);
+  }
+
+  return params;
+}
+
+function formatPhoneForGoogle(phone) {
+  const digits = normalizePhone(phone);
+  if (digits.length === 11) {
+    return `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7)}`;
+  }
+  if (digits.length === 10) {
+    return `${digits.slice(0, 3)}-${digits.slice(3, 6)}-${digits.slice(6)}`;
+  }
+  return phone.trim();
+}
+
+async function submitToGoogleForm(data) {
+  if (!isGoogleFormConfigured()) {
+    return {
+      ok: false,
+      error: new Error('Google Form 연동 설정이 완료되지 않았습니다.'),
+    };
+  }
+
+  try {
+    await fetch(GOOGLE_FORM_CONFIG.actionUrl, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+      },
+      body: buildGoogleFormBody(data).toString(),
+    });
+
+    // no-cors 응답은 읽을 수 없지만, 네트워크 오류가 없으면 전송 성공으로 처리합니다.
+    return { ok: true };
+  } catch (error) {
+    return { ok: false, error };
+  }
+}
+
+function setSubmitLoading(isLoading) {
+  if (!submitBtn) return;
+
+  submitBtn.disabled = isLoading || !(consentCheck?.checked && getSelectedFeature());
+  submitBtn.classList.toggle('is-loading', isLoading);
+  submitBtn.textContent = isLoading ? '등록 중...' : '기대평 등록';
+}
+
 const FEATURE_LABELS = {
   'feature-1': '수학 익힘책 메뉴 신설',
   'feature-2': '단원평가 2세트 및 재응시',
@@ -28,6 +106,8 @@ const FEATURE_DETAILS = {
     tag: '#평가 문항',
     icon: '📝',
     title: '단원평가 2세트 및 재응시',
+    image: 'evaluation.png',
+    imageAlt: '단원평가 2세트 및 재응시 소개 이미지',
     body: `
       <p>단원평가 문항이 2세트로 제공되고, 재응시 기능이 개선됩니다.</p>
       <strong>주요 업데이트</strong>
@@ -107,6 +187,41 @@ const FEATURE_DETAILS = {
       <strong>기대 효과</strong>
       <p>추상적인 수학 개념을 시각적으로 이해하도록 도와 수업 효과를 높일 수 있습니다.</p>
     `,
+  },
+  'feature-convenience': {
+    title: '수업 환경 개선 및 편의 기능 고도화',
+    showcase: [
+      {
+        title: '대시보드 PDF 저장',
+        src: 'dashboard02.png',
+        alt: '대시보드 PDF 저장 기능 소개',
+      },
+      {
+        title: '과제, 문제지 만들기(5,6학년 한정 기능)시 차시 중복 선택 가능',
+        src: 'makeevaluation.png',
+        alt: '과제·문제지 만들기 차시 중복 선택 기능 소개',
+      },
+      {
+        title: '모니터링 화면 기능 개선',
+        src: 'monitoring.png',
+        alt: '모니터링 화면 기능 개선 소개',
+      },
+      {
+        title: '총괄 평가 신설',
+        src: 'summative assessment.png',
+        alt: '총괄 평가 신설 소개',
+      },
+      {
+        title: '다양한 수업 도구 연동',
+        src: 'Teaching materials.png',
+        alt: '다양한 수업 도구 연동 소개',
+      },
+      {
+        title: '안내 영상 및 매뉴얼 제공',
+        src: 'FAQ.png',
+        alt: '안내 영상 및 매뉴얼 제공 소개',
+      },
+    ],
   },
 };
 
@@ -326,7 +441,7 @@ function showFormMessage(type, text) {
 
 // ── 폼 제출 ──
 if (reviewForm) {
-  reviewForm.addEventListener('submit', (e) => {
+  reviewForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const selectedFeature = getSelectedFeature();
@@ -374,6 +489,31 @@ if (reviewForm) {
 
     if (alreadyJoined) {
       showFormMessage('error', '이미 참여하셨습니다. 1인 1회만 참여 가능합니다.');
+      return;
+    }
+
+    const submission = {
+      office,
+      school,
+      name,
+      phone: formatPhoneForGoogle(phone),
+      featureLabel,
+      comment: userComment,
+    };
+
+    setSubmitLoading(true);
+
+    const googleResult = await submitToGoogleForm(submission);
+
+    setSubmitLoading(false);
+
+    if (!googleResult.ok) {
+      showFormMessage(
+        'error',
+        googleResult.error?.message?.includes('설정')
+          ? '설문 연동 설정이 완료되지 않았습니다. 관리자에게 문의해 주세요.'
+          : '기대평 전송에 실패했습니다. 잠시 후 다시 시도해 주세요.'
+      );
       return;
     }
 
@@ -489,10 +629,62 @@ function getFeatureImages(detail) {
   return [];
 }
 
+function bindFeatureModalZoomButtons() {
+  if (!featureModalMedia) return;
+
+  featureModalMedia.querySelectorAll('[data-lightbox-src]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      openImageLightbox(btn.dataset.lightboxSrc, btn.dataset.lightboxAlt);
+    });
+  });
+}
+
+function renderFeatureModalShowcase(detail) {
+  const items = detail.showcase || [];
+
+  if (!items.length || !featureModalMedia) {
+    featureModalMedia.innerHTML = '';
+    featureModalMedia.hidden = true;
+    featureModalMedia.classList.remove('feature-modal__media--showcase');
+    return;
+  }
+
+  featureModalMedia.classList.add('feature-modal__media--showcase');
+  featureModalMedia.innerHTML = `
+    <div class="feature-modal__showcase">
+      ${items
+        .map(
+          (item, index) => `
+        <article class="feature-modal__showcase-card">
+          <p class="feature-modal__showcase-title">${escapeHtml(item.title)}</p>
+          <button
+            type="button"
+            class="feature-modal__zoom-btn"
+            data-lightbox-src="${item.src}"
+            data-lightbox-alt="${escapeHtml(item.alt || item.title)}"
+            aria-label="${escapeHtml(item.title)} 이미지 크게 보기"
+          >
+            <img src="${item.src}" alt="${escapeHtml(item.alt || item.title)}" class="feature-modal__image" />
+            <span class="feature-modal__zoom-hint">클릭하여 확대</span>
+          </button>
+        </article>
+      `
+        )
+        .join('')}
+    </div>
+  `;
+  featureModalMedia.hidden = false;
+  bindFeatureModalZoomButtons();
+}
+
 function renderFeatureModalMedia(detail) {
   const images = getFeatureImages(detail);
 
-  if (!images.length || !featureModalMedia) {
+  if (!featureModalMedia) return;
+
+  featureModalMedia.classList.remove('feature-modal__media--showcase');
+
+  if (!images.length) {
     featureModalMedia.innerHTML = '';
     featureModalMedia.hidden = true;
     return;
@@ -509,10 +701,10 @@ function renderFeatureModalMedia(detail) {
           type="button"
           class="feature-modal__zoom-btn"
           data-lightbox-src="${img.src}"
-          data-lightbox-alt="${img.alt || detail.title}"
+          data-lightbox-alt="${escapeHtml(img.alt || detail.title)}"
           aria-label="이미지 ${index + 1} 크게 보기"
         >
-          <img src="${img.src}" alt="${img.alt || detail.title}" class="feature-modal__image" />
+          <img src="${img.src}" alt="${escapeHtml(img.alt || detail.title)}" class="feature-modal__image" />
           <span class="feature-modal__zoom-hint">클릭하여 확대</span>
         </button>
       `
@@ -521,12 +713,7 @@ function renderFeatureModalMedia(detail) {
     </div>
   `;
   featureModalMedia.hidden = false;
-
-  featureModalMedia.querySelectorAll('[data-lightbox-src]').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      openImageLightbox(btn.dataset.lightboxSrc, btn.dataset.lightboxAlt);
-    });
-  });
+  bindFeatureModalZoomButtons();
 }
 
 function openFeatureModal(featureId) {
@@ -535,11 +722,26 @@ function openFeatureModal(featureId) {
 
   closeImageLightbox();
   lastFocusedElement = document.activeElement;
-  featureModalTag.textContent = detail.tag;
-  featureModalIcon.textContent = detail.icon;
+  featureModalTag.textContent = detail.tag || '';
+  featureModalIcon.textContent = detail.icon || '';
   featureModalTitle.textContent = detail.title;
-  featureModalBody.innerHTML = detail.body;
-  renderFeatureModalMedia(detail);
+
+  const header = featureModal.querySelector('.feature-modal__header');
+  const hasShowcase = Boolean(detail.showcase?.length);
+  header?.classList.toggle('feature-modal__header--title-only', hasShowcase);
+
+  const dialog = featureModal.querySelector('.feature-modal__dialog');
+  dialog?.classList.toggle('feature-modal__dialog--wide', hasShowcase);
+
+  if (hasShowcase) {
+    featureModalBody.innerHTML = '';
+    featureModalBody.hidden = true;
+    renderFeatureModalShowcase(detail);
+  } else {
+    featureModalBody.hidden = false;
+    featureModalBody.innerHTML = detail.body || '';
+    renderFeatureModalMedia(detail);
+  }
 
   featureModal.hidden = false;
   featureModal.setAttribute('aria-hidden', 'false');
@@ -554,6 +756,12 @@ function closeFeatureModal() {
   featureModal.hidden = true;
   featureModal.setAttribute('aria-hidden', 'true');
   document.body.style.overflow = '';
+
+  const dialog = featureModal.querySelector('.feature-modal__dialog');
+  dialog?.classList.remove('feature-modal__dialog--wide');
+  featureModal.querySelector('.feature-modal__header')?.classList.remove('feature-modal__header--title-only');
+  if (featureModalBody) featureModalBody.hidden = false;
+
   lastFocusedElement?.focus();
 }
 

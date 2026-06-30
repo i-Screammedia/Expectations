@@ -362,6 +362,18 @@ img {
   color: var(--color-body);
 }
 
+.about-visual {
+  margin: 0 auto;
+  max-width: 1200px;
+}
+
+.about-visual__image {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--rounded-lg);
+}
+
 /* ============================================
    Steps (How To)
    ============================================ */
@@ -403,18 +415,12 @@ img {
 /* ============================================
    Prizes
    ============================================ */
-.prize-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--spacing-lg);
-}
-
 .prize-intro {
   text-align: center;
   font-size: 16px;
   line-height: 1.6;
   color: var(--color-body);
-  margin: calc(var(--spacing-lg) * -1) 0 var(--spacing-xl);
+  margin: calc(var(--spacing-lg) * -1) 0 var(--spacing-lg);
 }
 
 .prize-intro strong {
@@ -422,27 +428,16 @@ img {
   font-weight: 600;
 }
 
-.prize-card {
-  background: var(--color-surface-card);
-  border: 1px solid var(--color-hairline);
+.prize-visual {
+  margin: 0 auto;
+  max-width: 1024px;
+}
+
+.prize-visual__image {
+  display: block;
+  width: 100%;
+  height: auto;
   border-radius: var(--rounded-lg);
-  padding: var(--spacing-xl);
-  text-align: center;
-}
-
-.prize-card__name {
-  font-size: 20px;
-  font-weight: 600;
-  line-height: 1.4;
-  letter-spacing: -0.11px;
-  color: var(--color-ink);
-  margin-bottom: var(--spacing-sm);
-}
-
-.prize-card__count {
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--color-primary);
 }
 
 /* ============================================
@@ -705,12 +700,23 @@ img {
   text-align: left;
 }
 
+.convenience-block__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-base);
+  margin-bottom: var(--spacing-sm);
+}
+
 .convenience-block__title {
+  flex: 1 1 auto;
+  min-width: 0;
   font-size: 16px;
   font-weight: 700;
   color: var(--color-ink);
-  margin-bottom: var(--spacing-sm);
+  margin-bottom: 0;
   letter-spacing: -0.02em;
+  line-height: 1.4;
 }
 
 .convenience-block__guide {
@@ -893,6 +899,12 @@ img {
   color: #1e5a8a;
 }
 
+.convenience-block__header .feature-detail-btn {
+  width: auto;
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
 /* 기능 상세 모달 */
 .feature-modal {
   position: fixed;
@@ -927,6 +939,10 @@ img {
   box-shadow: 0 16px 48px rgba(38, 37, 30, 0.18);
 }
 
+.feature-modal__dialog--wide {
+  max-width: 920px;
+}
+
 .feature-modal__close {
   position: absolute;
   top: var(--spacing-base);
@@ -952,6 +968,15 @@ img {
   text-align: center;
   margin-bottom: var(--spacing-lg);
   padding-right: var(--spacing-xl);
+}
+
+.feature-modal__header--title-only {
+  margin-bottom: var(--spacing-base);
+}
+
+.feature-modal__header--title-only .feature-modal__tag,
+.feature-modal__header--title-only .feature-modal__icon {
+  display: none !important;
 }
 
 .feature-modal__tag {
@@ -1008,6 +1033,42 @@ img {
   margin-top: var(--spacing-lg);
   padding-top: var(--spacing-lg);
   border-top: 1px solid var(--color-hairline-soft);
+}
+
+.feature-modal__media--showcase {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+.feature-modal__showcase {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-lg);
+}
+
+.feature-modal__showcase-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.feature-modal__showcase-title {
+  margin-bottom: var(--spacing-sm);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--color-ink);
+  letter-spacing: -0.01em;
+}
+
+.feature-modal__showcase-card .feature-modal__image {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: var(--rounded-md);
+  border: 1px solid var(--color-hairline-soft);
+  background: var(--color-canvas-soft);
 }
 
 .feature-modal__media-inner {
@@ -1318,6 +1379,11 @@ img {
   background: var(--color-primary-active);
 }
 
+.button-submit.is-loading {
+  opacity: 0.75;
+  cursor: wait;
+}
+
 .review-form__notice {
   margin-top: var(--spacing-lg);
   font-size: 13px;
@@ -1618,8 +1684,7 @@ img {
   }
 
   .about-grid,
-  .steps,
-  .prize-grid {
+  .steps {
     grid-template-columns: repeat(2, 1fr);
   }
 
@@ -1662,8 +1727,7 @@ img {
   }
 
   .about-grid,
-  .steps,
-  .prize-grid {
+  .steps {
     grid-template-columns: 1fr;
   }
 
@@ -1693,11 +1757,16 @@ img {
     padding: var(--spacing-lg);
   }
 
+  .convenience-block__header {
+    flex-wrap: wrap;
+  }
+
   .feature-cards {
     grid-template-columns: 1fr;
   }
 
-  .feature-modal__media-grid {
+  .feature-modal__media-grid,
+  .feature-modal__showcase {
     grid-template-columns: 1fr;
   }
 
