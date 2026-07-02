@@ -82,7 +82,7 @@ const FEATURE_LABELS = {
   'feature-1': '수학 익힘책 메뉴 신설',
   'feature-2': '단원평가 2세트 및 재응시',
   'feature-3': '친절하고 보기 쉬운 학습 리포트',
-  'feature-4': '수학 기초 학습용 교구 및 게임 콘텐츠',
+  'feature-4': '수학 기초 학습관 및 게임 콘텐츠',
   'feature-5': '다양해진 펫&직업군 아바타',
   'feature-6': '21종 다양한 수학 교구 보드',
 };
@@ -92,6 +92,7 @@ const FEATURE_DETAILS = {
     tag: '#수학 익힘',
     icon: '📒',
     title: '수학 익힘책 메뉴 신설',
+    period: '27년 1학기',
     body: `
       <p>수학 익힘책 학습을 위한 전용 메뉴가 새롭게 추가됩니다.</p>
       <strong>주요 업데이트</strong>
@@ -106,6 +107,7 @@ const FEATURE_DETAILS = {
     tag: '#평가 문항',
     icon: '📝',
     title: '단원평가 2세트 및 재응시',
+    period: '26년 2학기 中',
     image: 'evaluation.png',
     imageAlt: '단원평가 2세트 및 재응시 소개 이미지',
     body: `
@@ -122,6 +124,7 @@ const FEATURE_DETAILS = {
     tag: '#맞춤 대시보드',
     icon: '📊',
     title: '친절하고 보기 쉬운 학습 리포트',
+    period: '27년 1학기',
     images: [
       { src: 'dashboard.png', alt: '맞춤 대시보드 학습 리포트 소개 1' },
       { src: 'dashboard01.png', alt: '맞춤 대시보드 학습 리포트 소개 2' },
@@ -139,10 +142,11 @@ const FEATURE_DETAILS = {
   'feature-4': {
     tag: '#수학 게임',
     icon: '🎮',
-    title: '수학 기초 학습용 교구 및 게임 콘텐츠',
+    title: '수학 기초 학습관 및 게임 콘텐츠',
+    period: '26년 2학기 적용',
     images: [
-      { src: 'game.png', alt: '수학 기초 학습용 교구 및 게임 콘텐츠 소개 1' },
-      { src: 'basic.png', alt: '수학 기초 학습용 교구 및 게임 콘텐츠 소개 2' },
+      { src: 'game.png', alt: '수학 기초 학습관 및 게임 콘텐츠 소개 1' },
+      { src: 'basic.png', alt: '수학 기초 학습관 및 게임 콘텐츠 소개 2' },
     ],
     body: `
       <p>수학 기초 학습을 돕는 교구형 콘텐츠와 게임이 추가됩니다.</p>
@@ -158,6 +162,7 @@ const FEATURE_DETAILS = {
     tag: '#아바타 꾸미기',
     icon: '🎨',
     title: '다양해진 펫&직업군 아바타',
+    period: '26년 2학기 中',
     images: [
       { src: 'avatar.png', alt: '다양해진 펫&직업군 아바타 소개 1' },
       { src: 'avatar01.png', alt: '다양해진 펫&직업군 아바타 소개 2' },
@@ -176,6 +181,7 @@ const FEATURE_DETAILS = {
     tag: '#수학 교구',
     icon: '🧮',
     title: '21종 다양한 수학 교구 보드',
+    period: '26년 2학기 적용',
     image: 'mathboard.png',
     imageAlt: '21종 다양한 수학 교구 보드 소개 이미지',
     body: `
@@ -202,9 +208,9 @@ const FEATURE_DETAILS = {
         alt: '과제·문제지 만들기 차시 중복 선택 기능 소개',
       },
       {
-        title: '모니터링 화면 기능 개선',
+        title: '모니터링 개별 화면 확대 & 정오답 태그',
         src: 'monitoring.png',
-        alt: '모니터링 화면 기능 개선 소개',
+        alt: '모니터링 개별 화면 확대 & 정오답 태그 소개',
       },
       {
         title: '총괄 평가 신설',
@@ -212,9 +218,9 @@ const FEATURE_DETAILS = {
         alt: '총괄 평가 신설 소개',
       },
       {
-        title: '다양한 수업 도구 연동',
+        title: '수업 중 바로 쓸 수 있는 도구',
         src: 'Teaching materials.png',
-        alt: '다양한 수업 도구 연동 소개',
+        alt: '수업 중 바로 쓸 수 있는 도구 소개',
       },
       {
         title: '안내 영상 및 매뉴얼 제공',
@@ -585,6 +591,7 @@ const featureModalClose = document.getElementById('featureModalClose');
 const featureModalTag = document.getElementById('featureModalTag');
 const featureModalIcon = document.getElementById('featureModalIcon');
 const featureModalTitle = document.getElementById('featureModalTitle');
+const featureModalPeriod = document.getElementById('featureModalPeriod');
 const featureModalBody = document.getElementById('featureModalBody');
 const featureModalMedia = document.getElementById('featureModalMedia');
 const imageLightbox = document.getElementById('imageLightbox');
@@ -725,6 +732,16 @@ function openFeatureModal(featureId) {
   featureModalTag.textContent = detail.tag || '';
   featureModalIcon.textContent = detail.icon || '';
   featureModalTitle.textContent = detail.title;
+
+  if (featureModalPeriod) {
+    if (detail.period) {
+      featureModalPeriod.textContent = detail.period;
+      featureModalPeriod.hidden = false;
+    } else {
+      featureModalPeriod.textContent = '';
+      featureModalPeriod.hidden = true;
+    }
+  }
 
   const header = featureModal.querySelector('.feature-modal__header');
   const hasShowcase = Boolean(detail.showcase?.length);
